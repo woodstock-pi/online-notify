@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
     print("Enviando IPs para o Telegram...")
     message = (
-        f"Raspberry Pi conectado\n\n"
+        f"Raspberry pi conectado\n\n"
         f"IP Local: {local_ip}\n"
         f"IP Externo: {external_ip}"
     )
