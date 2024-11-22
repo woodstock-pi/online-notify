@@ -1,5 +1,3 @@
-#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
-
 import time
 import requests
 import socket
@@ -9,9 +7,6 @@ from config import BOT_TOKEN, CHAT_ID
 TELEGRAM_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
 def is_connected():
-    """
-    Verifica se há conexão com a internet tentando acessar um site conhecido.
-    """
     try:
         requests.get("https://www.google.com", timeout=5)
         return True
@@ -19,9 +14,6 @@ def is_connected():
         return False
 
 def get_local_ip():
-    """
-    Obtém o endereço IP local real do dispositivo (não o loopback).
-    """
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.connect(("8.8.8.8", 80))  # Usando o DNS público do Google
@@ -32,9 +24,6 @@ def get_local_ip():
         return "IP local desconhecido"
 
 def get_external_ip():
-    """
-    Obtém o endereço IP externo (IP público) do dispositivo.
-    """
     try:
         response = requests.get("https://api.ipify.org?format=json", timeout=5)
         response.raise_for_status()
@@ -45,9 +34,6 @@ def get_external_ip():
         return "IP externo desconhecido"
 
 def send_message(chat_id, text):
-    """
-    Envia uma mensagem para o chat do Telegram.
-    """
     payload = {
         "chat_id": chat_id,
         "text": text
