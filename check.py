@@ -3,10 +3,7 @@
 import time
 import requests
 import socket
-
-# Configurações do Telegram
-BOT_TOKEN = "7094865944:AAGCyOjgikJqKpCQXXuycmtD77yIE0Q2eLc"  # Token do bot
-CHAT_ID = "-4573411635"  # Chat ID do destinatário
+import config
 
 # URL da API do Telegram
 TELEGRAM_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
