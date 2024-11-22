@@ -58,12 +58,12 @@ if __name__ == "__main__":
 
     print("Conexão detectada! Obtendo IPs...")
     local_ip = get_local_ip()
-    #external_ip = get_external_ip()
+    external_ip = get_external_ip()
 
     print("Enviando IPs para o Telegram...")
     message = (
         f"Raspberry Pi conectado\n\n"
         f"IP Local: {local_ip}\n"
-        #f"IP Externo: {external_ip}"
+        f"IP Externo: {external_ip}"
     )
     send_message(CHAT_ID, message)
