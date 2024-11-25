@@ -1,69 +1,69 @@
-import asyncio
+import time
+import requests
 import socket
-import logging
-from telegram.ext import ApplicationBuilder
-from config import BOT_TOKEN
+from config import BOT_TOKEN, CHAT_ID
 
-# Usuário autorizado
-AUTHORIZED_USER_ID = 6504237047  # Substitua pelo ID correto
+# URL da API do Telegram
+TELEGRAM_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
-logging.basicConfig(filename="bot_ip_report.log", level=logging.INFO)
+def is_connected():
+    try:
+        requests.get("https://www.google.com", timeout=5)
+        return True
+    except requests.ConnectionError:
+        return False
 
-async def get_local_ip():
-    """Obtém o IP local da máquina."""
+def get_local_ip():
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.connect(("8.8.8.8", 80))  # Usando o DNS público do Google
-            return s.getsockname()[0]
+            local_ip = s.getsockname()[0]  # Obtém o IP local usado na conexão
+        return local_ip
     except Exception as e:
-        logging.error(f"Erro ao obter o IP local: {e}")
+        print(f"Erro ao obter o IP local: {e}")
         return "IP local desconhecido"
 
-async def get_external_ip():
-    """Obtém o IP externo da máquina."""
+def get_external_ip():
     try:
-        import aiohttp
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://api.ipify.org?format=json", timeout=5) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return data.get("ip", "IP externo desconhecido")
-                else:
-                    return "Falha ao obter IP externo"
+        response = requests.get("https://api.ipify.org?format=json", timeout=5)
+        response.raise_for_status()
+        external_ip = response.json().get("ip", "IP externo desconhecido")
+        return external_ip
     except Exception as e:
-        logging.error(f"Erro ao obter o IP externo: {e}")
+        print(f"Erro ao obter o IP externo: {e}")
         return "IP externo desconhecido"
 
-async def send_ip_report(application):
-    """Obtém os IPs e envia o relatório para o usuário autorizado."""
-    local_ip = await get_local_ip()
-    external_ip = await get_external_ip()
+def send_message(chat_id, text):
+    payload = {
+        "chat_id": chat_id,
+        "text": text
+    }
+    try:
+        response = requests.post(TELEGRAM_URL, json=payload)
+        if response.status_code == 200:
+            print("Mensagem enviada com sucesso!")
+        else:
+            print(f"Falha ao enviar mensagem: {response.text}")
+    except Exception as e:
+        print(f"Erro ao conectar ao Telegram: {e}")
 
+if __name__ == "__main__":
+    print("Aguardando conexão com a internet...")
+    wait_time = 5  # Tempo inicial de espera em segundos
+
+    while not is_connected():
+        print(f"Sem conexão. Tentando novamente em {wait_time} segundos...")
+        time.sleep(wait_time)
+        wait_time = min(wait_time * 2, 60)  # Aumenta o intervalo até no máximo 60 segundos
+
+    print("Conexão detectada! Obtendo IPs...")
+    local_ip = get_local_ip()
+    external_ip = get_external_ip()
+
+    print("Enviando IPs para o Telegram...")
     message = (
-        f"Raspberry Pi conectado!\n\n"
+        f"Raspberry pi conectado!\n\n"
         f"IP Local: {local_ip}\n"
         f"IP Externo: {external_ip}"
     )
-
-    try:
-        # Envia a mensagem para o usuário autorizado
-        await application.bot.send_message(chat_id=AUTHORIZED_USER_ID, text=message)
-        logging.info("Mensagem enviada com sucesso!")
-    except Exception as e:
-        logging.error(f"Erro ao enviar mensagem: {e}")
-
-async def main():
-    """Configura e executa o bot."""
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
-
-    # Envia os IPs ao iniciar
-    await send_ip_report(app)
-
-    # Mantém o bot rodando (polling vazio para não interromper)
-    await app.start()
-    await app.updater.start_polling()
-    await app.updater.stop()
-    await app.stop()
-
-if __name__ == "__main__":
-    asyncio.run(main())
+    send_message(CHAT_ID, message)
