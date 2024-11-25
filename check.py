@@ -48,11 +48,11 @@ def send_message(chat_id, text):
     except Exception as e:
         print(f"Erro ao conectar ao Telegram: {e}")
 
-def send_private_message(bot_token, chat_id, message):
+def send_private_message(bot_token, chat_id, text):
     """Envia uma mensagem para uma conversa privada com o bot."""
     bot = Bot(token=bot_token)
     try:
-        bot.send_message(chat_id=chat_id, text=message)
+        bot.send_message(chat_id=chat_id, text=text)
         print("Mensagem enviada com sucesso!")
     except Exception as e:
         print(f"Erro ao enviar mensagem: {e}")
@@ -77,4 +77,4 @@ if __name__ == "__main__":
         f"IP Externo: {external_ip}"
     )
     #send_message(CHAT_ID, message)
-    send_private_message(CHAT_ID, message)
+    send_private_message(BOT_TOKEN, CHAT_ID, text)
