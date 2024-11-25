@@ -4,7 +4,7 @@ import socket
 from config import BOT_TOKEN
 
 # ID do chat do usuário autorizado
-CHAT_ID = "6504237047"
+CHAT_ID = "-6504237047"
 
 # URL da API do Telegram
 TELEGRAM_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
