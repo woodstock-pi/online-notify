@@ -3,9 +3,11 @@ import requests
 import socket
 from config import BOT_TOKEN
 
+# ID do chat do usuário autorizado
+CHAT_ID = "6504237047"
+
 # URL da API do Telegram
 TELEGRAM_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-GET_UPDATES_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
 
 def is_connected():
     """Verifica a conexão com a Internet."""
@@ -35,25 +37,6 @@ def get_external_ip():
         print(f"Erro ao obter o IP externo: {e}")
         return "IP externo desconhecido"
 
-def get_chat_id():
-    """Obtém o ID da conversa privada mais recente com o bot."""
-    try:
-        response = requests.get(GET_UPDATES_URL, timeout=5)
-        response.raise_for_status()
-        updates = response.json()
-
-        if updates.get("ok"):
-            results = updates.get("result", [])
-            for update in reversed(results):  # Percorre os updates do mais recente para o mais antigo
-                if "message" in update and "chat" in update["message"]:
-                    chat = update["message"]["chat"]
-                    if chat["type"] == "private":  # Certifica-se de que é uma conversa privada
-                        return chat["id"]
-        print("Nenhuma conversa privada encontrada. Envie uma mensagem ao bot para iniciar.")
-    except Exception as e:
-        print(f"Erro ao obter o ID da conversa privada: {e}")
-    return None
-
 def send_message(chat_id, text):
     """Envia uma mensagem para o Telegram."""
     payload = {
@@ -82,16 +65,10 @@ if __name__ == "__main__":
     local_ip = get_local_ip()
     external_ip = get_external_ip()
 
-    print("Obtendo o ID da conversa privada com o bot...")
-    chat_id = get_chat_id()
-
-    if chat_id:
-        print("Enviando IPs para a conversa privada com o bot...")
-        message = (
-            f"Raspberry Pi conectado!\n\n"
-            f"IP Local: {local_ip}\n"
-            f"IP Externo: {external_ip}"
-        )
-        send_message(chat_id, message)
-    else:
-        print("Não foi possível obter o ID da conversa privada. Envie uma mensagem ao bot para iniciar a interação.")
+    print("Enviando IPs para o Telegram...")
+    message = (
+        f"Raspberry Pi conectado!\n\n"
+        f"IP Local: {local_ip}\n"
+        f"IP Externo: {external_ip}"
+    )
+    send_message(CHAT_ID, message)
