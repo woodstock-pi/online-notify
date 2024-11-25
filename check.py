@@ -2,6 +2,7 @@ import time
 import requests
 import socket
 from config import BOT_TOKEN, CHAT_ID
+from telegram import Bot
 
 # URL da API do Telegram
 TELEGRAM_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
