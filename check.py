@@ -71,10 +71,10 @@ if __name__ == "__main__":
     external_ip = get_external_ip()
 
     print("Enviando IPs para o Telegram...")
-    message = (
+    text = (
         f"Raspberry pi conectado!\n\n"
         f"IP Local: {local_ip}\n"
         f"IP Externo: {external_ip}"
     )
-    #send_message(CHAT_ID, message)
+    #send_message(CHAT_ID, text)
     send_private_message(BOT_TOKEN, CHAT_ID, text)
