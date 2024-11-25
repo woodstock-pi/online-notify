@@ -4,6 +4,7 @@ import socket
 from config import BOT_TOKEN, CHAT_ID
 from telegram import Bot
 
+# 7860033135:AAHyV7W3-UCerUfDq2E1k4dhlKjrL2g65J4
 # URL da API do Telegram
 TELEGRAM_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
