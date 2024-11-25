@@ -6,6 +6,7 @@ from telegram import Bot
 
 # 7860033135:AAHyV7W3-UCerUfDq2E1k4dhlKjrL2g65J4 wdpi
 # 7094865944:AAGCyOjgikJqKpCQXXuycmtD77yIE0Q2eLc
+
 # URL da API do Telegram
 TELEGRAM_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
